@@ -61,15 +61,15 @@ def main():
             try:
                 command_map = safe_load(stream)
             except YAMLError:
-                print(f"Could not process file '{yaml_file_path}'")
+                parser.error(f"Could not process file '{yaml_file_path}'")
                 sys.exit(EX_NOINPUT)
     except FileNotFoundError:
         if yaml_file_path == parser.get_default("yaml_file_path"):
-            print(
+            parser.error(
                 "Please specify a yaml file with the -f option or create a "
                 f"\'{parser.get_default('yaml_file_path')}\' file"
             )
-        print(f"Could not open file '{yaml_file_path}'")
+        parser.error(f"Could not open file '{yaml_file_path}'")
         sys.exit(EX_NOINPUT)
 
     for command, argument_list in command_map.items():
