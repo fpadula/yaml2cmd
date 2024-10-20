@@ -4,7 +4,19 @@ Parses yaml files to generate (usually long) shell commands.
 
 # Installation
 
-Clone this repo and run `yaml2cmd.py`
+Clone this repo:
+```bash
+git clone https://github.com/fpadula/yaml2cmd.git
+```
+Navigate into the cloned folder and install it using `pip`:
+```bash
+cd yaml2cmd
+pip install -e .
+```
+If you get the error `externally-managed-environment`, append `--break-system-packages` to the installation command:
+```bash
+pip install -e . --break-system-packages
+```
 
 # Usage
 
