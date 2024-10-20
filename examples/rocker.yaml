@@ -1,0 +1,22 @@
+"rocker":
+  - --name:
+    - my_jazzy_container
+    # - $1
+  - --user
+  - --ssh
+  - --git
+  - --pulse
+  - --network:
+    - host
+  - --nvidia
+  - --privileged
+  - --x11
+  - --ulimit: 
+    - rtprio=99
+    - memlock=102400
+    - nofile=1024:524288
+  - --volume:
+    - /home/padula/Projects/jazzy/:/home/padula
+    - -- 
+  - my_jazzy
+  # - "tmux new -s jazzy -c /home/padula"
