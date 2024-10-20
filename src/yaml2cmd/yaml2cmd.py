@@ -4,9 +4,8 @@ import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from os import EX_NOINPUT, EX_OK
 
-import yaml
+from yaml import safe_load, YAMLError
 from subprocess import run
-# import re
 
 
 def process_arguments(command: str, argument_list: list) -> str:
@@ -26,12 +25,6 @@ def process_arguments(command: str, argument_list: list) -> str:
             arg_list.append(argument)
         elif isinstance(argument, dict):
             for dict_arg_name, dict_arg_values in argument.items():
-                # Check if this is a script argument or not
-                # script_arg_pattern = r'\$\d+([: ]|$)'
-                # matched_pattern = re.match(script_arg_pattern, )
-                # if script_arg_pattern:
-                #     arg_list.append()
-                # else:
                 arg_list.append(process_arguments(dict_arg_name, dict_arg_values))
 
     return f"{command} {' '.join(arg_list)}"
@@ -47,7 +40,7 @@ def main():
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
 
-    parser.add_argument("yaml_file", nargs=1, default="command.yaml")
+    parser.add_argument("-f", dest="yaml_file_path", help="Yaml file path", default="command.yaml")
 
     parser.add_argument(
         "-v",
@@ -57,23 +50,27 @@ def main():
         default=False
     )
 
-    parsed, unparsed = parser.parse_known_args()
+    parsed, _ = parser.parse_known_args()
 
     command_map = {}
-    yaml_file_path = parsed.yaml_file[0]
-    with open(yaml_file_path, "r", encoding="utf-8") as stream:
-        try:
-            command_map = yaml.safe_load(stream)
-        except yaml.YAMLError:
-            print(f"Could not load file {yaml_file_path}")
-            sys.exit(EX_NOINPUT)
+    yaml_file_path = parsed.yaml_file_path
+    verbose = parsed.verbose
+    try:
+        with open(yaml_file_path, "r", encoding="utf-8") as stream:
+            try:
+                command_map = safe_load(stream)
+            except YAMLError:
+                print(f"Could not process file '{yaml_file_path}'")
+                sys.exit(EX_NOINPUT)
+    except FileNotFoundError:
+        print(f"Could not open file '{yaml_file_path}'")
+        sys.exit(EX_NOINPUT)
 
     for command, argument_list in command_map.items():
         full_cmd_str = process_arguments(command, argument_list)
-        if parsed.verbose:
+        if verbose:
             print(full_cmd_str)
         run(full_cmd_str.split(), check=False)
-    # print(unparsed)
     sys.exit(EX_OK)
 
 
