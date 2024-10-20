@@ -22,7 +22,7 @@ pip install -e . --break-system-packages
 
 The script can be run with:
 ```bash
-yaml2cmd.py yaml_file
+yaml2cmd.py -f <yaml file path>
 ```
 
 Where `yaml_file` is a path to a `YAML` file that has to follow the structure:
