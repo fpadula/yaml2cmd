@@ -3,9 +3,9 @@
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from os import EX_NOINPUT, EX_OK
-
-from yaml import safe_load, YAMLError
 from subprocess import run
+
+from yaml import YAMLError, safe_load
 
 
 def process_arguments(command: str, argument_list: list) -> str:
